@@ -1,0 +1,37 @@
+# Dependencies
+node_modules/
+
+# Next.js
+.next/
+out/
+next-env.d.ts
+
+# Generated code (recreated by npm install through prisma generate)
+src/generated/
+
+# Testing output
+coverage/
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/
+reports/
+
+# Environment files: only the template is committed
+.env
+.env.*
+!.env.example
+
+# TypeScript
+*.tsbuildinfo
+
+# Logs and operating system files
+npm-debug.log*
+*.log
+.DS_Store
+Thumbs.db
+
+# Editors
+.vscode/*
+!.vscode/extensions.json
+.idea/

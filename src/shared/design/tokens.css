@@ -1,0 +1,107 @@
+/*
+ * Design tokens for The Unsaid (Nocturne Folio). DESIGN.md documents every token.
+ * Components use semantic tokens (ground, text, accent) and never raw palette values,
+ * so the Parchment reading theme only redefines the semantic layer.
+ * Contrast for every allowed text pair is checked by src/shared/design/contrast.test.ts.
+ */
+
+@theme {
+  /* Palette: Ink ground */
+  --color-ink-950: #121014;
+  --color-ink-900: #1e1a1f;
+  --color-ink-850: #1a1619;
+  --color-ink-800: #2a2429;
+  --color-ink-700: #3a3239;
+
+  /* Palette: fills only, never text on dark */
+  --color-burgundy: #7e2d3b;
+  --color-plum: #6e4a68;
+
+  /* Semantic: Ink theme (default) */
+  --color-ground: #121014;
+  --color-surface: #1e1a1f;
+  --color-sheet: #1a1619;
+  --color-rule: #2a2429;
+  --color-control-border: #3a3239;
+  --color-text: #efe6d6;
+  --color-text-secondary: #a89ea6;
+  --color-text-body: #e4dbcc;
+  --color-accent: #c9a35e;
+  --color-link: #d9a3ac;
+  --color-danger: #e08a7e;
+  --color-success: #9db39a;
+
+  /* Mood accents. A mood room sets --color-accent to one of these. */
+  --color-mood-longing: #d9a3ac;
+  --color-mood-regret: #b58aae;
+  --color-mood-relief: #9db39a;
+  --color-mood-fear: #8fa3bf;
+  --color-mood-tenderness: #c9a35e;
+  --color-mood-anger: #d08b6a;
+  --color-mood-shame: #a89a90;
+  --color-mood-hope: #cfc48e;
+
+  /* Type families (variables are set by next/font in the root layout) */
+  --font-display: var(--font-newsreader), Georgia, serif;
+  --font-reading: var(--font-literata), Georgia, serif;
+  --font-ui: var(--font-atkinson), system-ui, sans-serif;
+
+  /* Type sizes */
+  --text-display-1: 4.75rem;
+  --text-display-2: 3.5rem;
+  --text-display-3: 2.625rem;
+  --text-display-4: 1.875rem;
+  --text-display-5: 1.625rem;
+  --text-reading: 1.25rem;
+  --text-reading-compact: 1.125rem;
+  --text-ui: 0.9375rem;
+  --text-help: 0.875rem;
+  --text-label: 0.75rem;
+
+  /* Spacing base: Tailwind multiples of 4px give the approved scale 4, 8, 12, 16, 24, 32, 48, 72, 120 */
+  --spacing: 4px;
+
+  /* Breakpoints: 640, 960, 1280 */
+  --breakpoint-sm: 40rem;
+  --breakpoint-md: 60rem;
+  --breakpoint-lg: 80rem;
+}
+
+:root {
+  --measure: 66ch;
+  --content-max: 1280px;
+  --gutter: 24px;
+  --target-min: 44px;
+  --focus-ring-width: 2px;
+  --focus-ring-offset: 3px;
+
+  --motion-feedback: 120ms;
+  --motion-state: 200ms;
+  --motion-discover: 360ms;
+  --motion-moment: 700ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --motion-feedback: 0ms;
+    --motion-state: 0ms;
+    --motion-discover: 0ms;
+    --motion-moment: 0ms;
+  }
+}
+
+/* Parchment reading theme: redefines the semantic layer only. */
+[data-theme="parchment"] {
+  --color-ground: #f3ecdf;
+  --color-surface: #eae1d0;
+  --color-sheet: #f3ecdf;
+  --color-rule: #ddd2bf;
+  --color-control-border: #c9bca6;
+  --color-text: #221c21;
+  --color-text-secondary: #5e5359;
+  --color-text-body: #2b2429;
+  --color-accent: #7a5a1f;
+  --color-link: #7e2d3b;
+  --color-danger: #9a2f2a;
+  --color-success: #4f5a3a;
+}

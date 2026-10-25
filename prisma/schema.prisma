@@ -1,0 +1,12 @@
+// Prisma schema for The Unsaid.
+// Milestone 0 defines connectivity only. Domain models arrive from Milestone 2 onward;
+// see docs/architecture/data-model.md for the planned model.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}

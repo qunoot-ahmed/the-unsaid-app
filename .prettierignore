@@ -1,0 +1,11 @@
+node_modules/
+.next/
+out/
+src/generated/
+coverage/
+reports/
+test-results/
+playwright-report/
+blob-report/
+package-lock.json
+next-env.d.ts

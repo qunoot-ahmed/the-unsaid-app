@@ -1,0 +1,31 @@
+@import "tailwindcss";
+@import "../shared/design/tokens.css";
+
+@layer base {
+  html {
+    background-color: var(--color-ground);
+    color: var(--color-text);
+    font-family: var(--font-ui);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body {
+    min-height: 100dvh;
+  }
+
+  :focus-visible {
+    outline: var(--focus-ring-width) solid var(--color-accent);
+    outline-offset: var(--focus-ring-offset);
+  }
+}
+
+/* Reduced motion removes all movement. No flow in The Unsaid depends on animation. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}

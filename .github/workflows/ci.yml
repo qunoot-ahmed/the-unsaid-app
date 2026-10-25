@@ -1,0 +1,129 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - "chore/**"
+      - "feat/**"
+      - "fix/**"
+      - "docs/**"
+      - "test/**"
+      - "refactor/**"
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+# Least privilege: every job only reads the repository. No job writes to GitHub.
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # Placeholder so prisma generate (run on install) can load prisma.config.ts.
+  # Jobs that use a database override it with their own service connection.
+  DATABASE_URL: postgresql://placeholder:placeholder@localhost:5432/placeholder
+
+jobs:
+  quality:
+    name: quality
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run format:check
+      - run: npm run typecheck
+      - run: npm run check:writing
+      - run: npm run check:deps
+      - name: Unit tests with coverage
+        run: npx vitest run --project unit --coverage --reporter=default --reporter=junit --outputFile.junit=reports/unit-junit.xml
+      - name: Module dependency graph for impact analysis
+        if: always()
+        run: npx depcruise src tools tests --config .dependency-cruiser.cjs --output-type json > reports/dependency-graph.json
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: quality-reports
+          path: reports/
+          if-no-files-found: ignore
+
+  integration:
+    name: integration
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    services:
+      postgres:
+        image: postgres:17.11-alpine
+        env:
+          # Throwaway credentials for a database that exists only for this job.
+          POSTGRES_USER: unsaid
+          POSTGRES_PASSWORD: unsaid_ci
+          POSTGRES_DB: unsaid_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U unsaid -d unsaid_test"
+          --health-interval 2s
+          --health-timeout 3s
+          --health-retries 30
+    env:
+      DATABASE_URL: postgresql://unsaid:unsaid_ci@localhost:5432/unsaid_test
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - name: Integration tests
+        run: npx vitest run --project integration --reporter=default --reporter=junit --outputFile.junit=reports/integration-junit.xml
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: integration-reports
+          path: reports/
+          if-no-files-found: ignore
+
+  e2e:
+    name: e2e
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:e2e
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: e2e-junit
+          path: reports/e2e-junit.xml
+          if-no-files-found: ignore
+      - uses: actions/upload-artifact@v7
+        if: failure()
+        with:
+          name: playwright-traces
+          path: |
+            playwright-report/
+            test-results/
+          if-no-files-found: ignore
