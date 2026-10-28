@@ -46,8 +46,8 @@ jobs:
       - run: npm run typecheck
       - run: npm run check:writing
       - run: npm run check:deps
-      - name: Unit tests with coverage
-        run: npx vitest run --project unit --coverage --reporter=default --reporter=junit --outputFile.junit=reports/unit-junit.xml
+      - name: Unit and component tests with coverage
+        run: npx vitest run --project unit --project component --coverage --reporter=default --reporter=junit --outputFile.junit=reports/unit-junit.xml
       - name: Module dependency graph for impact analysis
         if: always()
         run: npx depcruise src tools tests --config .dependency-cruiser.cjs --output-type json > reports/dependency-graph.json
@@ -126,4 +126,26 @@ jobs:
           path: |
             playwright-report/
             test-results/
+          if-no-files-found: ignore
+
+  visual:
+    name: visual
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    # The same pinned image as npm run test:visual:docker, so baselines made locally match CI.
+    container:
+      image: mcr.microsoft.com/playwright:v1.64.1-noble
+      options: --ipc=host
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - run: npm ci --no-audit --no-fund
+      - run: npm run build
+      - run: npx playwright test --project=visual
+      - uses: actions/upload-artifact@v7
+        if: failure()
+        with:
+          name: visual-diffs
+          path: test-results/
           if-no-files-found: ignore

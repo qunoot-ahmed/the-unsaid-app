@@ -20,6 +20,15 @@ export default defineConfig({
       {
         extends: true,
         test: {
+          name: "component",
+          environment: "jsdom",
+          include: ["src/**/*.test.tsx"],
+          setupFiles: ["tests/component/setup.ts"],
+        },
+      },
+      {
+        extends: true,
+        test: {
           name: "integration",
           environment: "node",
           include: ["tests/integration/**/*.test.ts"],
@@ -31,8 +40,14 @@ export default defineConfig({
     ],
     coverage: {
       provider: "v8",
-      include: ["src/**/*.ts", "tools/**/*.ts"],
-      exclude: ["src/generated/**", "**/*.test.ts", "tools/**/cli.ts"],
+      include: ["src/**/*.ts", "src/**/*.tsx", "tools/**/*.ts"],
+      exclude: [
+        "src/generated/**",
+        "src/app/**",
+        "**/*.test.ts",
+        "**/*.test.tsx",
+        "tools/**/cli.ts",
+      ],
       reporter: ["text", "json-summary", "lcov"],
       reportsDirectory: "reports/coverage",
     },
