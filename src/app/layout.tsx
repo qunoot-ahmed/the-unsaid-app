@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Atkinson_Hyperlegible_Next, Literata, Newsreader } from "next/font/google";
 import type { ReactNode } from "react";
+import { SkipLink } from "@/shared/ui";
 import "./globals.css";
 
 const display = Newsreader({
@@ -29,7 +30,7 @@ const ui = Atkinson_Hyperlegible_Next({
 });
 
 export const metadata: Metadata = {
-  title: "The Unsaid",
+  title: { default: "The Unsaid", template: "%s · The Unsaid" },
   description: "Some stories are written. Others are confessed.",
 };
 
@@ -40,7 +41,10 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" className={`${display.variable} ${reading.variable} ${ui.variable}`}>
-      <body>{children}</body>
+      <body>
+        <SkipLink />
+        {children}
+      </body>
     </html>
   );
 }

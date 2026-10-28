@@ -65,6 +65,32 @@
   --breakpoint-sm: 40rem;
   --breakpoint-md: 60rem;
   --breakpoint-lg: 80rem;
+
+  /* Motion: decoration only. Global reduced-motion styles remove every animation. */
+  --animate-unfold: unfold var(--motion-discover) cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  --animate-rise: rise var(--motion-discover) ease-out both;
+
+  @keyframes unfold {
+    from {
+      opacity: 0;
+      transform: perspective(900px) rotateX(-62deg);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
 }
 
 :root {
@@ -104,4 +130,30 @@
   --color-link: #7e2d3b;
   --color-danger: #9a2f2a;
   --color-success: #4f5a3a;
+}
+
+/* Mood rooms: the room's mood becomes the page accent (DESIGN.md, mood accents). */
+[data-mood="longing"] {
+  --color-accent: var(--color-mood-longing);
+}
+[data-mood="regret"] {
+  --color-accent: var(--color-mood-regret);
+}
+[data-mood="relief"] {
+  --color-accent: var(--color-mood-relief);
+}
+[data-mood="fear"] {
+  --color-accent: var(--color-mood-fear);
+}
+[data-mood="tenderness"] {
+  --color-accent: var(--color-mood-tenderness);
+}
+[data-mood="anger"] {
+  --color-accent: var(--color-mood-anger);
+}
+[data-mood="shame"] {
+  --color-accent: var(--color-mood-shame);
+}
+[data-mood="hope"] {
+  --color-accent: var(--color-mood-hope);
 }

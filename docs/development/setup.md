@@ -76,11 +76,23 @@ Before npm run db:up, edit .env: choose a local database password and use the sa
 
 The tests start the production server on port 3100. HTML reports are written to playwright-report.
 
+## Visual regression tests
+
+    npm run test:visual:docker
+
+Screenshots depend on the fonts and renderer of the operating system, so visual tests run only inside the pinned image mcr.microsoft.com/playwright:v1.64.1-noble, locally and in CI. The command needs Docker Desktop. It installs Linux dependencies and builds inside Docker volumes, so the host node_modules and .next are untouched. The first run downloads the image and takes several minutes.
+
+After an intended visual change, regenerate the baselines and review every changed image before committing it:
+
+    npm run test:visual:docker -- --update-snapshots=all
+
+Baselines live in tests/visual/**screenshots**.
+
 ## Everyday checks
 
     npm run verify
 
-This runs lint, format check, type check, writing rules, module boundaries and unit tests. Run integration and browser tests as well before opening a pull request when a change touches the database or the interface.
+This runs lint, format check, type check, writing rules, module boundaries, unit tests and component tests. Run integration and browser tests as well before opening a pull request when a change touches the database or the interface.
 
 ## Stopping services
 

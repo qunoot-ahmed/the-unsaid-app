@@ -35,6 +35,14 @@ module.exports = {
       to: { path: "(^|/)node_modules/(next|react|react-dom|@prisma|pg)/" },
     },
     {
+      name: "ui-reaches-server-only-through-actions",
+      severity: "error",
+      comment:
+        "Client and UI code may call Server Actions but must never import server data or queries, which can hold sealed text or story graphs.",
+      from: { path: "^src/modules/[^/]+/ui/", pathNot: "\\.test\\.tsx?$" },
+      to: { path: "^src/modules/[^/]+/server/", pathNot: "-actions\\.ts$" },
+    },
+    {
       name: "app-code-does-not-import-tests-or-tools",
       severity: "error",
       from: { path: "^src/" },
@@ -44,7 +52,7 @@ module.exports = {
       name: "no-dev-dependencies-in-app-code",
       severity: "error",
       comment: "Application code must not depend on packages installed only for development.",
-      from: { path: "^src/", pathNot: "\\.test\\.ts$" },
+      from: { path: "^src/", pathNot: "\\.test\\.tsx?$" },
       to: { dependencyTypes: ["npm-dev"] },
     },
   ],

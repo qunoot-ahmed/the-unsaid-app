@@ -167,6 +167,22 @@ Target is WCAG 2.2 AA. These are implementation acceptance criteria; none is ver
 - Hidden, deleted and nonexistent content share one not-found page.
 - No action requires hover, a gesture or a long press. Input text is at least 16 px.
 
+## Implementation status
+
+Milestone 1 implements the design system and the four signature experiences as demonstrations with fictional content. Primitives are in src/shared/ui; signature components are in src/modules/home, src/modules/confessions and src/modules/reading. The specimen page is at /design.
+
+Implemented components: Button (four variants, two sizes, pending), Field (input and textarea with label, help and error), native select, Radio card, checkbox, Mood mark and mood rule, Folded letter, Sealed letter, Inked phrase, demonstration Reaction toggle, Choice list, Thread, Endings found, Dialog (a bottom sheet below 640 px), Status line, Error notice, Skeleton, Empty state, not-found page and error page with a reference.
+
+Archival metadata implemented: the catalogue mark on every letter and the printed as line under the composer preview. The receive checklist belongs to onboarding (Milestone 2).
+
+Known differences from the approved canvas and this file, to be resolved in the milestone named:
+
+- Not built yet: Tabs and Switch (Milestone 2, account settings), Chip filter (Milestone 6, Library), Validation panel (Milestone 5), Toast (Milestone 3), the optional ending map (Milestone 6).
+- The specimen page shows the Ink theme only. The Parchment theme is implemented and shown in the reader; a Parchment specimen follows with the next theme work.
+- On mobile the Thread is a disclosure below the scene, open by default, instead of a strip under the header.
+- Primary navigation reads The Wall, Read a story and Write. The Library replaces Read a story in Milestone 6.
+- Reactions, sealed reveals, the reader thread and the composer are not saved. Each screen says so. Autosave and the idempotency key arrive with persistence in Milestone 3.
+
 ## Voice
 
 Plain, calm and specific: what happened and what to do next. Never "try later" without saying when. No promise of absolute anonymity.

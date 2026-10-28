@@ -3,9 +3,10 @@ import { describe, expect, it } from "vitest";
 import { contrastRatio, readCustomProperties } from "./contrast";
 
 const tokensCss = readFileSync(new URL("./tokens.css", import.meta.url), "utf8");
+const parchmentStart = tokensCss.indexOf('[data-theme="parchment"]');
 const [inkBlock = "", parchmentBlock = ""] = [
   tokensCss.slice(tokensCss.indexOf("@theme"), tokensCss.indexOf(":root")),
-  tokensCss.slice(tokensCss.indexOf('[data-theme="parchment"]')),
+  tokensCss.slice(parchmentStart, tokensCss.indexOf("}", parchmentStart)),
 ];
 const ink = readCustomProperties(inkBlock);
 const parchment = readCustomProperties(parchmentBlock);
