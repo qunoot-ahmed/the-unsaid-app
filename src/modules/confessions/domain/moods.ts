@@ -20,7 +20,8 @@ export interface Mood {
   roomLine: string;
 }
 
-export const MOODS: Readonly<Record<MoodId, Mood>> = {
+/** Each entry's id must equal its key, so a mood can never be shown under another mood's name. */
+export const MOODS: Readonly<{ [Id in MoodId]: Mood & { id: Id } }> = {
   longing: { id: "longing", label: "Longing", roomLine: "For the ones who are still missed." },
   regret: { id: "regret", label: "Regret", roomLine: "What people would undo." },
   relief: { id: "relief", label: "Relief", roomLine: "Weights finally set down." },
