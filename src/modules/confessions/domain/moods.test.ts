@@ -15,12 +15,13 @@ describe("[WALL-MOOD-001] mood rooms", () => {
     expect(parseMoodParam([])).toBeNull();
   });
 
-  it("defines a label, a room line and a colour token for every mood", () => {
+  it("defines a matching id, a label, a room line and a colour token for every mood", () => {
     const tokens = readFileSync(
       new URL("../../../shared/design/tokens.css", import.meta.url),
       "utf8",
     );
     for (const id of MOOD_IDS) {
+      expect(MOODS[id].id).toBe(id);
       expect(MOODS[id].label.length).toBeGreaterThan(0);
       expect(MOODS[id].roomLine).toMatch(/\.$/);
       expect(tokens).toContain(`--color-mood-${id}:`);
