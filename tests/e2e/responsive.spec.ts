@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { horizontalOverflow } from "./support";
+import { horizontalOverflow, waitForAnimationsToFinish } from "./support";
 
 const WIDTHS = [320, 375, 390, 768, 1024, 1440];
 const PAGES = ["/", "/wall", "/write", "/stories/the-letter-at-number-nine/read", "/design"];
@@ -39,6 +39,7 @@ test.describe("[RESP-002] touch targets", () => {
     await page.setViewportSize({ width: 375, height: 812 });
     for (const path of ["/", "/wall", "/write", "/stories/the-letter-at-number-nine/read"]) {
       await page.goto(path);
+      await waitForAnimationsToFinish(page);
       const small = await page.evaluate(() =>
         [...document.querySelectorAll<HTMLElement>("button, nav a, [role='button']")]
           .filter((element) => element.offsetParent !== null)
