@@ -94,6 +94,8 @@ Edit .env before starting the database: replace every value marked change-me. Th
 
 Pull requests to main and pushes to main or development branches run four jobs on GitHub Actions with read-only permissions: quality (lint, format, types, writing rules, module boundaries, unit and component tests with coverage), integration (tests against a PostgreSQL service), end-to-end (production build, Playwright and axe) and visual (screenshots in the pinned Playwright container). JUnit results, coverage and the module dependency graph are published as build artifacts.
 
+Pull requests also run a fifth job, test-impact, in observation mode. It runs RiskPilot (github.com/qunoot-ahmed/riskpilot) at a pinned, reviewed commit against the changes since the merge base, using the mappings in riskpilot.config.json. It publishes the recommended test files, the reason for each, and any full suite fallback as a job summary and a riskpilot-report artifact. It only recommends: the four jobs above still run every test, and an analysis failure fails this job visibly instead of producing a recommendation.
+
 ## Documentation
 
 - [DESIGN.md](DESIGN.md): approved visual language, tokens and interaction rules

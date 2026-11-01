@@ -6,6 +6,7 @@ All notable changes to this project are recorded here. The format follows Keep a
 
 ### Added
 
+- RiskPilot test impact analysis in observation mode: a pull request job that recommends affected test files with reasons from riskpilot.config.json, without skipping or changing any existing job.
 - Milestone 1 design system: shared interface primitives (buttons, fields, radio cards, feedback states, dialog, site navigation and chrome) and a design specimen page at /design.
 - Signature demonstrations with fictional content: the Lifted Ink homepage with two doors, the Whisper Wall with mood rooms and ordinary, folded and sealed letters, a branching demonstration story with the Thread and endings found, and The Letter composer in preview mode. Nothing is stored or published.
 - Component tests with Testing Library in a jsdom Vitest project, end-to-end specifications for every Milestone 1 flow, responsive and touch-target checks, and a visual regression suite run in a pinned Playwright container.
