@@ -149,3 +149,75 @@ jobs:
           name: visual-diffs
           path: test-results/
           if-no-files-found: ignore
+
+  # Observation mode: RiskPilot recommends the test files a pull request affects and explains why.
+  # It never skips, gates or changes the jobs above, which still run every test.
+  # It installs nothing from the pull request and runs no pull request code: it only reads Git objects.
+  test-impact:
+    name: test-impact (observation)
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    env:
+      RISKPILOT_REPOSITORY: qunoot-ahmed/riskpilot
+      # A reviewed RiskPilot commit. Change it only after reviewing the RiskPilot diff.
+      RISKPILOT_SHA: dfa09ea1dff4950aee5f69bbf3d36266fe8f40b8
+    steps:
+      - name: Check the RiskPilot pin is a full commit SHA
+        run: |
+          if [[ ! "$RISKPILOT_SHA" =~ ^[0-9a-f]{40}$ ]]; then
+            echo "::error::RISKPILOT_SHA must be a full 40 character commit SHA, not a branch or tag."
+            exit 1
+          fi
+      - name: Check out the pull request head
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          # Full history so the merge base with the target branch can be found.
+          fetch-depth: 0
+          path: target
+          persist-credentials: false
+      - name: Check out RiskPilot at the pinned commit
+        uses: actions/checkout@v7
+        with:
+          repository: ${{ env.RISKPILOT_REPOSITORY }}
+          ref: ${{ env.RISKPILOT_SHA }}
+          path: riskpilot
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: riskpilot/.nvmrc
+      - name: Analyse test impact from the merge base
+        # RiskPilot has no runtime dependencies, so nothing is installed.
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -o pipefail
+          test "$(git -C riskpilot rev-parse HEAD)" = "$RISKPILOT_SHA"
+          mkdir -p riskpilot-report
+          node riskpilot/src/cli.ts target "$BASE_SHA" "$HEAD_SHA" --merge-base \
+            --output riskpilot-report/report.json \
+            --markdown riskpilot-report/summary.md \
+            | tee riskpilot-report/summary.txt
+      - name: Confirm the analysed checkout is unchanged
+        run: |
+          if [ -n "$(git -C target status --porcelain)" ]; then
+            echo "::error::RiskPilot changed the analysed checkout."
+            git -C target status --short
+            exit 1
+          fi
+      - name: Publish the job summary
+        if: always()
+        run: |
+          if [ -f riskpilot-report/summary.md ]; then
+            cat riskpilot-report/summary.md >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "RiskPilot produced no report. No test recommendation was made; see the job log." >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: riskpilot-report
+          path: riskpilot-report/
+          if-no-files-found: warn
